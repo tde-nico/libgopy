@@ -18,16 +18,18 @@ func call_f64(fun string, args ...any) {
 	cstr := C.CString(str)
 	defer C.free(unsafe.Pointer(cstr))
 
-	var arg C.t_pyargs
-	var a C.double
-	a = args[0]
+	var arg *C.t_pyargs
+	a := C.double(args[0].(float64))
+	arg = (*C.t_pyargs)(C.malloc(C.sizeof_t_pyargs))
 	arg.value = unsafe.Pointer(&a)
 	arg.t = 'f'
 	arg.next = nil
 
-	res := C.call_f64(cstr, 1, unsafe.Pointer(&arg))
+	res := C.call_f64(cstr, 1, arg)
 
 	fmt.Printf("%v: %v\n", fun, res)
+
+	C.free(unsafe.Pointer(arg))
 }
 
 func call_i64(fun string) {

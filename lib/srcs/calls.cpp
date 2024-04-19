@@ -13,14 +13,22 @@ double	call_f64(const char *fname, int count, t_pyargs *args)
 	double		res;
 
 	PyObject	*pyargs;
+	PyObject	*arg;
 
-	pyargs = PyTuple_Pack(count);
+	pyargs = PyTuple_New(count);
 	int i = -1;
-	while (++i < count)
+	while (++i < count && args)
 	{
-		PyObject* arg = PyFloat_FromDouble(*(double *)args->value);
+		switch (args->t) {
+			case 'f':
+				std::cout << "arg: " << *(double *)args->value << std::endl;
+				arg = PyFloat_FromDouble(*(double *)args->value);
+				break ;
+			default:
+				std::cerr << "Error: unknown type\"" << args->t << "\"\n";
+				return (0);
+		}
 		PyTuple_SetItem(pyargs, i, arg);
-		std::cout << "arg: " << PyFloat_AsDouble(arg) << std::endl;
 		args = args->next;
 	}
 
