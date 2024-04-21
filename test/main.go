@@ -20,36 +20,34 @@ type Args struct {
 
 func (a *Args) init_args(args []any) {
 	var tmp *C.t_pyargs
-loop:
 	for _, arg := range args {
 		tmp = (*C.t_pyargs)(C.malloc(C.sizeof_t_pyargs))
 
 		t := reflect.TypeOf(arg).String()
-	typeof:
 		switch t {
 		case "float64":
 			double := C.double(arg.(float64))
 			tmp.value = unsafe.Pointer(&double)
 			tmp.t = 'f'
-			break typeof
+		case "int64":
+			integer := C.int(arg.(int64))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'd'
 		case "int":
 			integer := C.int(arg.(int))
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = 'd'
-			break typeof
 		case "[]uint8":
 			cstr := C.CString(string(arg.([]byte)))
 			tmp.value = unsafe.Pointer(cstr)
 			tmp.t = 'b'
-			break typeof
 		case "string":
 			cstr := C.CString(arg.(string))
 			tmp.value = unsafe.Pointer(cstr)
 			tmp.t = 'b'
-			break typeof
 		default:
 			fmt.Printf("Unknown type: %v\n", t)
-			continue loop
+			continue
 		}
 		tmp.next = nil
 
@@ -124,6 +122,18 @@ func call_byte(fun string, args ...any) {
 	fmt.Printf("%v: %v -> %v\n", fun, res, string(res))
 }
 
+func call(fun string, args ...any) {
+	str := fun
+	cstr := C.CString(str)
+	defer C.free(unsafe.Pointer(cstr))
+
+	var a Args
+	a.init_args(args)
+	defer a.free()
+
+	C.call(cstr, C.int(a.count), a.list)
+}
+
 func main() {
 	C.init()
 
@@ -144,6 +154,9 @@ func main() {
 	call_i64("func7", 6, 10, 9, 8)
 	call_byte("func7", "Hello", "World", "Go", "Python")
 	call_byte("func7", []byte("Hello"), []byte("World"), []byte("Go"), []byte("Python"))
+	call_f64("func7", 6.5, 10, "Hello", []byte("World"), int64(3))
+
+	call("func7", 6.5, 10, "Hello", []byte("World"), int64(3))
 
 	C.finalize()
 }

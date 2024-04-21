@@ -22,6 +22,7 @@ void	init(void);
 int		load(const char *module);
 void	finalize(void);
 
+void		call(const char *fname, int count, t_pyargs *args);
 double		call_f64(const char *fname, int count, t_pyargs *args);
 long		call_i64(const char *fname, int count, t_pyargs *args);
 t_pybytes	call_byte(const char *fname, int count, t_pyargs *args);

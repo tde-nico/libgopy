@@ -38,7 +38,7 @@ PyObject	*setup_args(int count, t_pyargs *args)
 	return (pyargs);
 }
 
-PyObject	*call(const char *fname, int count, t_pyargs *args)
+PyObject	*call_func(const char *fname, int count, t_pyargs *args)
 {
 	PyObject	*func;
 	PyObject	*res_obj;
@@ -62,12 +62,17 @@ PyObject	*call(const char *fname, int count, t_pyargs *args)
 	return (res_obj);
 }
 
+void	call(const char *fname, int count, t_pyargs *args)
+{
+	call_func(fname, count, args);
+}
+
 double	call_f64(const char *fname, int count, t_pyargs *args)
 {
 	PyObject	*res_obj;
 	double		res;
 
-	res_obj = call(fname, count, args);
+	res_obj = call_func(fname, count, args);
 	if (!res_obj)
 		return(0);
 	res = PyFloat_AsDouble(res_obj);
@@ -79,7 +84,7 @@ long	call_i64(const char *fname, int count, t_pyargs *args)
 	PyObject	*res_obj;
 	long		res;
 
-	res_obj = call(fname, count, args);
+	res_obj = call_func(fname, count, args);
 	if (!res_obj)
 		return(0);
 	res = PyLong_AsLong(res_obj);
@@ -93,7 +98,7 @@ t_pybytes	call_byte(const char *fname, int count, t_pyargs *args)
 
 	res.bytes = NULL;
 	res.size = 0;
-	res_obj = call(fname, count, args);
+	res_obj = call_func(fname, count, args);
 	if (!res_obj)
 		return(res);
 	res.bytes = (unsigned char *)PyBytes_AsString(res_obj);
