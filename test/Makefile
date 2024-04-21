@@ -22,7 +22,7 @@ GB		= go build
 
 all:
 	@ make -s -C ../lib
-	@ cp $(LIB) .
+	@ cp $(LIB) ./libgopy/
 	@ $(GB) $(GOFLAGS)
 	@ echo "$(GREEN)[+] $(NAME)$(END)"
 
