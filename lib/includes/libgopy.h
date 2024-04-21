@@ -23,8 +23,8 @@ int		load(const char *module);
 void	finalize(void);
 
 double		call_f64(const char *fname, int count, t_pyargs *args);
-long		call_i64(const char *fname);
-t_pybytes	call_byte(const char *fname);
+long		call_i64(const char *fname, int count, t_pyargs *args);
+t_pybytes	call_byte(const char *fname, int count, t_pyargs *args);
 
 
 # ifdef __cplusplus
