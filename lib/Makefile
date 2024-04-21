@@ -19,7 +19,7 @@ NAME			= libgopy.so
 #####   COMMANDS   #####
 
 CC				= g++
-CFLAGS			= -Werror -Wall -Wextra -fPIC -shared
+CFLAGS			= -Werror -Wall -Wextra -fPIC -shared -O2 -s
 PYFLAGS			= $(shell python3-config --includes) $(shell python3-config --ldflags) -lpython3.10
 
 MD				= mkdir -p

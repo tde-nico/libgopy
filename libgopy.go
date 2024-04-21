@@ -1,10 +1,10 @@
 package libgopy
 
 /*
-#cgo LDFLAGS: ./libgopy/libgopy.so
+#cgo LDFLAGS: ./lib/libgopy.so
 #include <stdlib.h>
 #include <stdarg.h>
-#include "../../lib/includes/libgopy.h"
+#include "./lib/includes/libgopy.h"
 */
 import "C"
 import (

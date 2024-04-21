@@ -1,69 +1,74 @@
 #include "libgopy.h"
 #include <iostream>
 #include <Python.h>
-
-void	f1()
-{
-	Py_Initialize();
-	PyRun_SimpleString("import sys; sys.path.insert(0, '.')");
-
-	PyObject *name, *load_module, *func, *callfunc, *args;
-	
-	name = PyUnicode_FromString((char *)"test");
-	load_module = PyImport_Import(name);
-
-	func = PyObject_GetAttrString(load_module, (char *)"func1");
-	callfunc = PyObject_CallObject(func, NULL);
-	double func1_out = PyFloat_AsDouble(callfunc);
-	std::cout << "func1 output: " << func1_out << std::endl;
-
-	func = PyObject_GetAttrString(load_module, (char *)"func2");
-	args = PyTuple_Pack(1, PyFloat_FromDouble(1.0));
-	callfunc = PyObject_CallObject(func, args);
-	double func2_out = PyFloat_AsDouble(callfunc);
-	std::cout << "func2 output: " << func2_out << std::endl;
-
-	func = PyObject_GetAttrString(load_module, (char *)"func3");
-	args = PyTuple_Pack(2, PyFloat_FromDouble(2.0), PyFloat_FromDouble(3.0));
-	callfunc = PyObject_CallObject(func, args);
-	double func3_out = PyFloat_AsDouble(callfunc);
-	std::cout << "func3 output: " << func3_out << std::endl;
-
-	func = PyObject_GetAttrString(load_module, (char *)"func4");
-	args = PyTuple_Pack(1, PyUnicode_FromString((char *)"world"));
-	callfunc = PyObject_CallObject(func, args);
-	std::string func4_out = _PyUnicode_AsString(callfunc);
-	std::cout << "func4 output: " << func4_out << std::endl;
-
-	Py_Finalize();
-}
+#include <map>
 
 
-PyObject	*name;
-PyObject	*load_module;
+std::map<std::string, PyObject *>	funcs;
+
 
 void	init(void)
 {
 	Py_Initialize();
 	PyRun_SimpleString("import sys; sys.path.insert(0, '.')");
-	
-	name = NULL;
-	load_module = NULL;
 }
 
 
 int	load(const char *module)
 {
+	PyObject	*name;
+	PyObject	*load_module;
+	PyObject	*dir_list;
+	Py_ssize_t	dir_size;
+	PyObject	*attr_name;
+	const char	*attr_str;
+	PyObject	*func;
+
 	name = PyUnicode_FromString(module);
 	if (!name) {
 		std::cerr << "Error: converting \"" << module << "\" into string\n";
 		return (1);
 	}
+
 	load_module = PyImport_Import(name);
 	if (!load_module) {
 		std::cerr << "Error: importing \"" << module << "\" module\n";
 		return (1);
 	}
+
+	dir_list = PyObject_Dir(load_module);
+	if (!dir_list) {
+		std::cerr << "Error: getting attributes of the module\n";
+		return (1);
+	}
+
+	dir_size = PyList_Size(dir_list);
+	for (Py_ssize_t i = 0; i < dir_size; i++) {
+		attr_name = PyList_GetItem(dir_list, i);
+		if (!attr_name) {
+			std::cerr << "Error: getting attribute name\n";
+			return (1);
+		}
+
+		attr_str = PyUnicode_AsUTF8(attr_name);
+		if (!attr_str) {
+			std::cerr << "Error: converting attribute name to string\n";
+			return (1);
+		}
+
+		if (attr_str[0] == '_')
+			continue;
+
+		func = PyObject_GetAttrString(load_module, attr_str);
+		if (!func) {
+			std::cerr << "Error: finding \"" << func << "\" function\n";
+			return (1);
+		}
+
+		funcs.insert(std::pair<std::string, PyObject *>(attr_str, func));
+	}
+	Py_DECREF(dir_list);
+
 	return (0);
 }
 

@@ -1,10 +1,22 @@
 #include "libgopy.h"
 #include <iostream>
 #include <Python.h>
+#include <map>
 
 
-extern PyObject	*name;
-extern PyObject	*load_module;
+extern std::map<std::string, PyObject *>	funcs;
+
+
+template <typename K, typename V>
+V GetWithDef(const std::map <K,V> &m, const K &key, const V &defval) {
+	typename std::map<K,V>::const_iterator it = m.find(key);
+	if (it == m.end()) {
+		return (defval);
+	} else {
+		return (it->second);
+	}
+}
+
 
 PyObject	*setup_args(int count, t_pyargs *args)
 {
@@ -44,13 +56,10 @@ PyObject	*call_func(const char *fname, int count, t_pyargs *args)
 	PyObject	*res_obj;
 	PyObject	*pyargs;
 
-	if (!load_module) {
-		std::cerr << "Error: no module imported\n";
-		return (NULL);
-	}
-	func = PyObject_GetAttrString(load_module, fname);
+	func = NULL;
+	func = GetWithDef(funcs, std::string(fname), func);
 	if (!func) {
-		std::cerr << "Error: finding \"" << func << "\" function\n";
+		std::cerr << "Error: finding \"" << fname << "\" function\n";
 		return (NULL);
 	}
 	pyargs = setup_args(count, args);
