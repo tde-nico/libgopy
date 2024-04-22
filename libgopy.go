@@ -1,9 +1,8 @@
 package libgopy
 
 /*
-#cgo LDFLAGS: ${SRCDIR}/lib/libgopy.so
+#cgo LDFLAGS: ./libgopy.so
 #include <stdlib.h>
-#include <stdarg.h>
 #include "./lib/includes/libgopy.h"
 */
 import "C"

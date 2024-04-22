@@ -14,7 +14,7 @@ HIGH_RED		= \033[91m
 
 #####   INFO   #####
 
-NAME			= libgopy.so
+NAME			= ../libgopy.so
 
 #####   COMMANDS   #####
 
