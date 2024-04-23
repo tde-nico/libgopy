@@ -55,5 +55,21 @@ func TestLibgopy(t *testing.T) {
 
 	Call("func7", 6.5, 10, "Hello", []byte("World"), int64(3))
 
-	Finalize()
+	//Finalize()
+}
+
+func BenchmarkLibgopy(b *testing.B) {
+	err := Load("tests.test_script2")
+	if err != nil {
+		b.Errorf("Load failed: %v", err)
+		b.FailNow()
+	}
+	var res []byte
+
+	for n := 0; n < b.N; n++ {
+		res = Call_byte("func8", []byte("Hello"), []byte("World"), []byte("Go"), []byte("Python"), []byte("Hello"), []byte("World"), []byte("Go"), []byte("Python"))
+		if string(res) != "olleH" {
+			b.Errorf("Call_byte failed: %v != %v", res, "olleH")
+		}
+	}
 }

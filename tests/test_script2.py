@@ -6,3 +6,8 @@ def func7(*args):
 	print(args)
 	if args:
 		return args[0]
+
+def func8(*args):
+	if args:
+		ret = args[0][::-1]
+		return ret
