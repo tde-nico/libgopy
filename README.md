@@ -6,6 +6,58 @@ A golang library for python execution
 
 Remember to put the compiled library in the same folder where you compile (needed for linking), and also needed at runtime
 
+Functions:
+```go
+// init() // initialize python
+Load(module string) // load a python module and all the contained functions (the functions starting wiht '_' will be considered private and then not loaded)
+Call(fun string, args ...any) // calls fun with args as args, returns nothing
+Call_f64(fun string, args ...any) // calls fun with args as args, returns float64
+Call_i64(fun string, args ...any) // calls fun with args as args, returns int64
+Call_bytes(fun string, args ...any) // calls fun with args as args, returns []byte
+Finalize() // finalize python
+```
+current supported types for arguments are:
+```
+float64
+int64
+int
+[]byte
+[]uint8
+string
+```
+
+## Example
+
+`main.go`
+```go
+package main
+
+import (
+    "fmt"
+
+    py "github.com/tde-nico/libgopy"
+)
+
+func main() {
+    err := py.Load("test")
+    if err != nil {
+        panic(err)
+    }
+
+    res := py.Call_byte("hello", "world", 5, 6.7)
+    fmt.Printf("Result: %s\n", res)
+
+    py.Finalize()
+}
+```
+
+`test.py`
+```py
+def hello(x, y, z):
+    print(f"Hello from test.py {x} {y} {z}")
+    return b"Hello from test.py in bytes"
+```
+
 ## Benchmarks
 
 tested with: `go test -bench=. -benchtime=10s -count=10` on Windows 10 WSL 2
