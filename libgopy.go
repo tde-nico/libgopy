@@ -12,7 +12,7 @@ import (
 	"unsafe"
 )
 
-func init() {
+func Init() {
 	C.init()
 }
 
@@ -46,14 +46,50 @@ func (a *Args) init_args(args []any) {
 			double := C.double(arg.(float64))
 			tmp.value = unsafe.Pointer(&double)
 			tmp.t = 'f'
+		case "float32":
+			double := C.double(arg.(float32))
+			tmp.value = unsafe.Pointer(&double)
+			tmp.t = 'f'
 		case "int64":
-			integer := C.int(arg.(int64))
+			integer := C.longlong(arg.(int64))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'd'
+			tmp.t = 'i'
+		case "int32":
+			integer := C.longlong(arg.(int32))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'i'
+		case "int16":
+			integer := C.longlong(arg.(int16))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'i'
+		case "int8":
+			integer := C.longlong(arg.(int8))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'i'
 		case "int":
-			integer := C.int(arg.(int))
+			integer := C.longlong(arg.(int))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'd'
+			tmp.t = 'i'
+		case "uint64":
+			integer := C.ulonglong(arg.(uint64))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'u'
+		case "uint32":
+			integer := C.ulonglong(arg.(uint32))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'u'
+		case "uint16":
+			integer := C.ulonglong(arg.(uint16))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'u'
+		case "uint8":
+			integer := C.ulonglong(arg.(uint8))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'u'
+		case "uint":
+			integer := C.ulonglong(arg.(uint))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = 'u'
 		case "[]uint8":
 			cstr := C.CString(string(arg.([]byte)))
 			tmp.value = unsafe.Pointer(cstr)
@@ -122,6 +158,20 @@ func Call_i64(fun string, args ...any) int64 {
 	res := C.call_i64(cstr, C.int(a.count), a.list)
 
 	return int64(res)
+}
+
+func Call_u64(fun string, args ...any) uint64 {
+	str := fun
+	cstr := C.CString(str)
+	defer C.free(unsafe.Pointer(cstr))
+
+	var a Args
+	a.init_args(args)
+	defer a.free()
+
+	res := C.call_u64(cstr, C.int(a.count), a.list)
+
+	return uint64(res)
 }
 
 func Call_byte(fun string, args ...any) []byte {

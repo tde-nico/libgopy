@@ -8,19 +8,22 @@ Remember to put the compiled library in the same folder where you compile (neede
 
 Functions:
 ```go
-// init() // initialize python
+Init() // initialize python
 Load(module string) // load a python module and all the contained functions (the functions starting wiht '_' will be considered private and then not loaded)
 Call(fun string, args ...any) // calls fun with args as args, returns nothing
 Call_f64(fun string, args ...any) // calls fun with args as args, returns float64
 Call_i64(fun string, args ...any) // calls fun with args as args, returns int64
-Call_bytes(fun string, args ...any) // calls fun with args as args, returns []byte
+Call_u64(fun string, args ...any) // calls fun with args as args, returns uint64
+Call_byte(fun string, args ...any) // calls fun with args as args, returns []byte
 Finalize() // finalize python
 ```
 current supported types for arguments are:
-```
-float64
-int64
-int
+```go
+float64 float32
+int64  int32  int16  int8  int
+uint64 uint32 uint16 uint8 uint
+rune
+byte
 []byte
 []uint8
 string
@@ -39,15 +42,17 @@ import (
 )
 
 func main() {
-    err := py.Load("test")
+	py.Init() // intitialize python
+
+    err := py.Load("test") // loads the python module test (test.py)
     if err != nil {
         panic(err)
     }
 
-    res := py.Call_byte("hello", "world", 5, 6.7)
+    res := py.Call_byte("hello", "world", 5, 6.7) // calls fuction hello as: func hello(string, int, float) []byte
     fmt.Printf("Result: %s\n", res)
 
-    py.Finalize()
+    py.Finalize() // finalize python
 }
 ```
 

@@ -5,6 +5,8 @@ import (
 )
 
 func TestLibgopy(t *testing.T) {
+	Init()
+
 	err := Load("tests.test_script1")
 	if err != nil {
 		t.Errorf("Load failed: %v", err)
@@ -53,23 +55,33 @@ func TestLibgopy(t *testing.T) {
 		t.Errorf("Call_f64 failed: %v != %v", res8, 6.5)
 	}
 
-	Call("func7", 6.5, 10, "Hello", []byte("World"), int64(3))
+	Call("func7",
+		float64(71.5), float32(3.14),
+		int64(3), int32(4), int16(5), int8(6), int(10),
+		uint64(3), uint32(4), uint16(5), uint8(6), uint(10),
+		rune(65),
+		byte('A'),
+		[]uint8("World"),
+		[]byte("World"),
+		"Hello",
+	)
 
-	//Finalize()
+	Finalize()
 }
 
 func BenchmarkLibgopy(b *testing.B) {
+	Init()
 	err := Load("tests.test_script2")
 	if err != nil {
 		b.Errorf("Load failed: %v", err)
 		b.FailNow()
 	}
 	var res []byte
-
 	for n := 0; n < b.N; n++ {
 		res = Call_byte("func8", []byte("Hello"), []byte("World"), []byte("Go"), []byte("Python"), []byte("Hello"), []byte("World"), []byte("Go"), []byte("Python"))
 		if string(res) != "olleH" {
 			b.Errorf("Call_byte failed: %v != %v", res, "olleH")
 		}
 	}
+	Finalize()
 }

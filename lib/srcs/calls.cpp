@@ -33,8 +33,11 @@ PyObject	*setup_args(int count, t_pyargs *args)
 			case 'f':
 				arg = PyFloat_FromDouble(*(double *)args->value);
 				break ;
-			case 'd':
-				arg = PyLong_FromLong(*(int *)args->value);
+			case 'i':
+				arg = PyLong_FromLongLong(*(long long *)args->value);
+				break ;
+			case 'u':
+				arg = PyLong_FromUnsignedLongLong(*(unsigned long long *)args->value);
 				break ;
 			case 'b':
 				arg = PyBytes_FromString((const char *)args->value);
@@ -88,15 +91,27 @@ double	call_f64(const char *fname, int count, t_pyargs *args)
 	return (res);
 }
 
-long	call_i64(const char *fname, int count, t_pyargs *args)
+long long	call_i64(const char *fname, int count, t_pyargs *args)
 {
 	PyObject	*res_obj;
-	long		res;
+	long long	res;
 
 	res_obj = call_func(fname, count, args);
 	if (!res_obj)
 		return(0);
-	res = PyLong_AsLong(res_obj);
+	res = PyLong_AsLongLong(res_obj);
+	return (res);
+}
+
+unsigned long long	call_u64(const char *fname, int count, t_pyargs *args)
+{
+	PyObject			*res_obj;
+	unsigned long long	res;
+
+	res_obj = call_func(fname, count, args);
+	if (!res_obj)
+		return(0);
+	res = PyLong_AsUnsignedLongLong(res_obj);
 	return (res);
 }
 
