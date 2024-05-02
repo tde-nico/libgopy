@@ -41,6 +41,46 @@ func (a *Args) init_args(args []any) {
 
 		t := reflect.TypeOf(arg).String()
 		switch t {
+		case "int64":
+			integer := C.i64(arg.(int64))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_INT
+		case "int32":
+			integer := C.i64(arg.(int32))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_INT
+		case "int16":
+			integer := C.i64(arg.(int16))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_INT
+		case "int8":
+			integer := C.i64(arg.(int8))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_INT
+		case "int":
+			integer := C.i64(arg.(int))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_INT
+		case "uint64":
+			integer := C.u64(arg.(uint64))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_UINT
+		case "uint32":
+			integer := C.u64(arg.(uint32))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_UINT
+		case "uint16":
+			integer := C.u64(arg.(uint16))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_UINT
+		case "uint8":
+			integer := C.u64(arg.(uint8))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_UINT
+		case "uint":
+			integer := C.u64(arg.(uint))
+			tmp.value = unsafe.Pointer(&integer)
+			tmp.t = C.TYPE_UINT
 		case "float64":
 			double := C.double(arg.(float64))
 			tmp.value = unsafe.Pointer(&double)
@@ -49,53 +89,17 @@ func (a *Args) init_args(args []any) {
 			double := C.double(arg.(float32))
 			tmp.value = unsafe.Pointer(&double)
 			tmp.t = C.TYPE_FLOAT
-		case "int64":
-			integer := C.longlong(arg.(int64))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_INT
-		case "int32":
-			integer := C.longlong(arg.(int32))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_INT
-		case "int16":
-			integer := C.longlong(arg.(int16))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_INT
-		case "int8":
-			integer := C.longlong(arg.(int8))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_INT
-		case "int":
-			integer := C.longlong(arg.(int))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_INT
-		case "uint64":
-			integer := C.ulonglong(arg.(uint64))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_UINT
-		case "uint32":
-			integer := C.ulonglong(arg.(uint32))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_UINT
-		case "uint16":
-			integer := C.ulonglong(arg.(uint16))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_UINT
-		case "uint8":
-			integer := C.ulonglong(arg.(uint8))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_UINT
-		case "uint":
-			integer := C.ulonglong(arg.(uint))
-			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = C.TYPE_UINT
 		case "[]uint8":
-			cstr := C.CString(string(arg.([]byte)))
-			tmp.value = unsafe.Pointer(cstr)
+			var cbytes C.t_pybytes
+			cbytes.bytes = (*C.uchar)(C.CBytes(arg.([]byte)))
+			cbytes.size = C.uint(len(arg.([]byte)))
+			tmp.value = unsafe.Pointer(&cbytes)
 			tmp.t = C.TYPE_BYTES
 		case "string":
-			cstr := C.CString(arg.(string))
-			tmp.value = unsafe.Pointer(cstr)
+			var cbytes C.t_pybytes
+			cbytes.bytes = (*C.uchar)(unsafe.Pointer(C.CString(arg.(string))))
+			cbytes.size = C.uint(len(arg.(string)))
+			tmp.value = unsafe.Pointer(&cbytes)
 			tmp.t = C.TYPE_BYTES
 		default:
 			fmt.Printf("Unknown type: %v\n", t)
@@ -122,13 +126,23 @@ func (a *Args) free() {
 	for arg := a.list; arg != nil; {
 		tmp = arg.next
 		switch arg.t {
-		case 'b':
-			C.free(arg.value)
+		case C.TYPE_BYTES:
+			C.free(unsafe.Pointer((*C.t_pybytes)(arg.value).bytes))
 		default:
 		}
 		C.free(unsafe.Pointer(arg))
 		arg = tmp
 	}
+}
+
+func sweep(n int) {
+	var f int64
+	f = 0
+	f += 42
+	if n == 0 && f > 0 {
+		return
+	}
+	sweep(n - 1)
 }
 
 func Call_f64(fun string, args ...any) float64 {
@@ -139,6 +153,8 @@ func Call_f64(fun string, args ...any) float64 {
 	var a Args
 	a.init_args(args)
 	defer a.free()
+
+	sweep(100)
 
 	res := C.call_f64(cstr, C.int(a.count), a.list)
 

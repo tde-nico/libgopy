@@ -1,8 +1,8 @@
 package libgopy
 
-import (
-	"testing"
-)
+import "testing"
+
+// WARNING: This tests can panic if called mutiple Init and/or Finalize
 
 func TestLibgopy(t *testing.T) {
 	Init()
@@ -64,8 +64,9 @@ func TestLibgopy(t *testing.T) {
 		[]uint8("World"),
 		[]byte("World"),
 		"Hello",
+		"Hello\x00World",
+		[]byte("Hello\x00World"),
 	)
-
 	Finalize()
 }
 

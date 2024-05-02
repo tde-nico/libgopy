@@ -40,7 +40,7 @@ PyObject	*setup_args(int count, t_pyargs *args)
 				arg = PyFloat_FromDouble(*(double *)args->value);
 				break ;
 			case TYPE_BYTES:
-				arg = PyBytes_FromString((const char *)args->value);
+				arg = PyBytes_FromStringAndSize((const char *)((t_pybytes *)args->value)->bytes, ((t_pybytes *)args->value)->size);
 				break ;
 			default:
 				std::cerr << "Error: unknown type\"" << args->t << "\"\n";
@@ -68,7 +68,7 @@ PyObject	*call_func(const char *fname, int count, t_pyargs *args)
 	pyargs = setup_args(count, args);
 	res_obj = PyObject_CallObject(func, pyargs);
 	if (!res_obj) {
-		std::cerr << "Error: calling \"" << func << "\" function\n";
+		std::cerr << "Error: calling \"" << fname << "[" << func << "]\" function\n";
 		return (NULL);
 	}
 	return (res_obj);
