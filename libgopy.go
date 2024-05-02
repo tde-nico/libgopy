@@ -44,59 +44,59 @@ func (a *Args) init_args(args []any) {
 		case "float64":
 			double := C.double(arg.(float64))
 			tmp.value = unsafe.Pointer(&double)
-			tmp.t = 'f'
+			tmp.t = C.TYPE_FLOAT
 		case "float32":
 			double := C.double(arg.(float32))
 			tmp.value = unsafe.Pointer(&double)
-			tmp.t = 'f'
+			tmp.t = C.TYPE_FLOAT
 		case "int64":
 			integer := C.longlong(arg.(int64))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'i'
+			tmp.t = C.TYPE_INT
 		case "int32":
 			integer := C.longlong(arg.(int32))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'i'
+			tmp.t = C.TYPE_INT
 		case "int16":
 			integer := C.longlong(arg.(int16))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'i'
+			tmp.t = C.TYPE_INT
 		case "int8":
 			integer := C.longlong(arg.(int8))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'i'
+			tmp.t = C.TYPE_INT
 		case "int":
 			integer := C.longlong(arg.(int))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'i'
+			tmp.t = C.TYPE_INT
 		case "uint64":
 			integer := C.ulonglong(arg.(uint64))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'u'
+			tmp.t = C.TYPE_UINT
 		case "uint32":
 			integer := C.ulonglong(arg.(uint32))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'u'
+			tmp.t = C.TYPE_UINT
 		case "uint16":
 			integer := C.ulonglong(arg.(uint16))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'u'
+			tmp.t = C.TYPE_UINT
 		case "uint8":
 			integer := C.ulonglong(arg.(uint8))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'u'
+			tmp.t = C.TYPE_UINT
 		case "uint":
 			integer := C.ulonglong(arg.(uint))
 			tmp.value = unsafe.Pointer(&integer)
-			tmp.t = 'u'
+			tmp.t = C.TYPE_UINT
 		case "[]uint8":
 			cstr := C.CString(string(arg.([]byte)))
 			tmp.value = unsafe.Pointer(cstr)
-			tmp.t = 'b'
+			tmp.t = C.TYPE_BYTES
 		case "string":
 			cstr := C.CString(arg.(string))
 			tmp.value = unsafe.Pointer(cstr)
-			tmp.t = 'b'
+			tmp.t = C.TYPE_BYTES
 		default:
 			fmt.Printf("Unknown type: %v\n", t)
 			continue

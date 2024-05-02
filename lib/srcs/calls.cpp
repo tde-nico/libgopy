@@ -30,21 +30,21 @@ PyObject	*setup_args(int count, t_pyargs *args)
 	while (--i >= 0 && args)
 	{
 		switch (args->t) {
-			case 'f':
+			case TYPE_INT:
+				arg = PyLong_FromLongLong(*(i64 *)args->value);
+				break ;
+			case TYPE_UINT:
+				arg = PyLong_FromUnsignedLongLong(*(u64 *)args->value);
+				break ;
+			case TYPE_FLOAT:
 				arg = PyFloat_FromDouble(*(double *)args->value);
 				break ;
-			case 'i':
-				arg = PyLong_FromLongLong(*(long long *)args->value);
-				break ;
-			case 'u':
-				arg = PyLong_FromUnsignedLongLong(*(unsigned long long *)args->value);
-				break ;
-			case 'b':
+			case TYPE_BYTES:
 				arg = PyBytes_FromString((const char *)args->value);
 				break ;
 			default:
 				std::cerr << "Error: unknown type\"" << args->t << "\"\n";
-				return (0);
+				return (NULL);
 		}
 		if (PyTuple_SetItem(pyargs, i, arg))
 			return (NULL);

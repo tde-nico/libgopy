@@ -6,6 +6,14 @@
 typedef __int64_t i64;
 typedef __uint64_t u64;
 
+typedef enum e_type
+{
+	TYPE_INT,
+	TYPE_UINT,
+	TYPE_FLOAT,
+	TYPE_BYTES
+}	t_type;
+
 typedef struct s_pybytes
 {
 	unsigned char	*bytes;
@@ -15,7 +23,7 @@ typedef struct s_pybytes
 typedef struct s_pyargs
 {
 	void			*value;
-	char			t;
+	t_type			t;
 	struct s_pyargs	*next;
 }	t_pyargs;
 
