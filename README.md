@@ -89,3 +89,10 @@ ok      github.com/tde-nico/libgopy     139.135s
 
 The library included in this module, is compiled for python3.10.
 If you want another version, change the python flags into the makefile and then recompile it
+
+## Features
+
+- [x] multi type argument support
+- [x] variadic arguments
+- [x] auto funcion import from module
+- [ ] gloabal variables
