@@ -91,10 +91,10 @@ double	call_f64(const char *fname, int count, t_pyargs *args)
 	return (res);
 }
 
-long long	call_i64(const char *fname, int count, t_pyargs *args)
+i64	call_i64(const char *fname, int count, t_pyargs *args)
 {
 	PyObject	*res_obj;
-	long long	res;
+	i64			res;
 
 	res_obj = call_func(fname, count, args);
 	if (!res_obj)
@@ -103,10 +103,10 @@ long long	call_i64(const char *fname, int count, t_pyargs *args)
 	return (res);
 }
 
-unsigned long long	call_u64(const char *fname, int count, t_pyargs *args)
+u64	call_u64(const char *fname, int count, t_pyargs *args)
 {
-	PyObject			*res_obj;
-	unsigned long long	res;
+	PyObject	*res_obj;
+	u64			res;
 
 	res_obj = call_func(fname, count, args);
 	if (!res_obj)
