@@ -135,16 +135,6 @@ func (a *Args) free() {
 	}
 }
 
-func sweep(n int) {
-	var f int64
-	f = 0
-	f += 42
-	if n == 0 && f > 0 {
-		return
-	}
-	sweep(n - 1)
-}
-
 func Call_f64(fun string, args ...any) float64 {
 	str := fun
 	cstr := C.CString(str)
@@ -153,8 +143,6 @@ func Call_f64(fun string, args ...any) float64 {
 	var a Args
 	a.init_args(args)
 	defer a.free()
-
-	sweep(100)
 
 	res := C.call_f64(cstr, C.int(a.count), a.list)
 
