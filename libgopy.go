@@ -7,7 +7,6 @@ package libgopy
 import "C"
 import (
 	"fmt"
-	"reflect"
 	"unsafe"
 )
 
@@ -39,70 +38,70 @@ func (a *Args) init_args(args []any) {
 	for _, arg := range args {
 		tmp = (*C.t_pyargs)(C.malloc(C.sizeof_t_pyargs))
 
-		t := reflect.TypeOf(arg).String()
-		switch t {
-		case "int64":
-			integer := C.i64(arg.(int64))
+		//t := reflect.TypeOf(arg).String()
+		switch v := arg.(type) {
+		case int64:
+			integer := C.i64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_INT
-		case "int32":
-			integer := C.i64(arg.(int32))
+		case int32:
+			integer := C.i64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_INT
-		case "int16":
-			integer := C.i64(arg.(int16))
+		case int16:
+			integer := C.i64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_INT
-		case "int8":
-			integer := C.i64(arg.(int8))
+		case int8:
+			integer := C.i64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_INT
-		case "int":
-			integer := C.i64(arg.(int))
+		case int:
+			integer := C.i64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_INT
-		case "uint64":
-			integer := C.u64(arg.(uint64))
+		case uint64:
+			integer := C.u64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_UINT
-		case "uint32":
-			integer := C.u64(arg.(uint32))
+		case uint32:
+			integer := C.u64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_UINT
-		case "uint16":
-			integer := C.u64(arg.(uint16))
+		case uint16:
+			integer := C.u64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_UINT
-		case "uint8":
-			integer := C.u64(arg.(uint8))
+		case uint8:
+			integer := C.u64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_UINT
-		case "uint":
-			integer := C.u64(arg.(uint))
+		case uint:
+			integer := C.u64(v)
 			tmp.value = unsafe.Pointer(&integer)
 			tmp.t = C.TYPE_UINT
-		case "float64":
-			double := C.double(arg.(float64))
+		case float64:
+			double := C.double(v)
 			tmp.value = unsafe.Pointer(&double)
 			tmp.t = C.TYPE_FLOAT
-		case "float32":
-			double := C.double(arg.(float32))
+		case float32:
+			double := C.double(v)
 			tmp.value = unsafe.Pointer(&double)
 			tmp.t = C.TYPE_FLOAT
-		case "[]uint8":
+		case []uint8:
 			var cbytes C.t_pybytes
-			cbytes.bytes = (*C.uchar)(C.CBytes(arg.([]byte)))
-			cbytes.size = C.uint(len(arg.([]byte)))
+			cbytes.bytes = (*C.uchar)(C.CBytes(v))
+			cbytes.size = C.uint(len(v))
 			tmp.value = unsafe.Pointer(&cbytes)
 			tmp.t = C.TYPE_BYTES
-		case "string":
+		case string:
 			var cbytes C.t_pybytes
-			cbytes.bytes = (*C.uchar)(unsafe.Pointer(C.CString(arg.(string))))
-			cbytes.size = C.uint(len(arg.(string)))
+			cbytes.bytes = (*C.uchar)(unsafe.Pointer(C.CString(v)))
+			cbytes.size = C.uint(len(v))
 			tmp.value = unsafe.Pointer(&cbytes)
 			tmp.t = C.TYPE_BYTES
 		default:
-			fmt.Printf("Unknown type: %v\n", t)
+			fmt.Printf("Unknown type: %v\n", v)
 			continue
 		}
 		tmp.next = nil
