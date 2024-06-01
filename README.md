@@ -95,4 +95,4 @@ If you want another version, change the python flags into the makefile and then 
 - [x] multi type argument support
 - [x] variadic arguments
 - [x] auto funcion import from module
-- [ ] gloabal variables
+- [x] gloabal variables
