@@ -1,9 +1,15 @@
+from tests.test_script3 import TEST
+
+LOCAL_GLOBAL_TEST_VAR = 10
+
 def func6(*args):
 	print(args)
 	return 3.14
 
 def func7(*args):
 	print(args)
+	print(LOCAL_GLOBAL_TEST_VAR)
+	print(TEST)
 	if args:
 		return args[0]
 

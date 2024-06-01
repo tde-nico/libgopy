@@ -101,7 +101,7 @@ func (a *Args) init_args(args []any) {
 			tmp.value = unsafe.Pointer(&cbytes)
 			tmp.t = C.TYPE_BYTES
 		default:
-			fmt.Printf("Unknown type: %v\n", v)
+			fmt.Printf("Unknown type: %T\n", v)
 			continue
 		}
 		tmp.next = nil

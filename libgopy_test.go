@@ -59,6 +59,7 @@ func TestLibgopy(t *testing.T) {
 		float64(71.5), float32(3.14),
 		int64(3), int32(4), int16(5), int8(6), int(10),
 		uint64(3), uint32(4), uint16(5), uint8(6), uint(10),
+		uintptr(65), // Unknown type: uintptr
 		rune(65),
 		byte('A'),
 		[]uint8("World"),
