@@ -1,5 +1,21 @@
 # libgopy
 
+<!--
+#field
+
+#groups
+Libraries
+
+#languages
+C
+C++
+Go
+Python
+
+#frames and libs
+
+-->
+
 A golang library for python execution
 
 ## Usage
